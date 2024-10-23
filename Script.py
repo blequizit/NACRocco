@@ -99,7 +99,7 @@ def inserir_dados_no_mongodb(arquivo_csv, collection):
 
         log_info(f"{len(dados)} registros lidos do arquivo CSV.")
 
-        if collection:
+        if collection is not None:  # Verificação correta da coleção
             registros_inseridos = 0
             for dado in dados:
                 # Valida os dados
@@ -110,7 +110,7 @@ def inserir_dados_no_mongodb(arquivo_csv, collection):
                     continue  # Ignora o registro se houver erros
 
                 # Verificação de duplicidade antes de inserir
-                if not collection.find_one(dado):  # Se não existe, insere
+                if not collection.find_one({'id': dado['id']}):  # Se não existe, insere
                     collection.insert_one(dado)
                     registros_inseridos += 1
                 else:
@@ -140,7 +140,7 @@ def processar_csv(diretorio, uri):
 
 if __name__ == "__main__":
     uri = "mongodb+srv://blequizit:aYKbkBUB0FPI39UX@dadospessoas.k6sjq.mongodb.net/"
-    diretorio = '/caminho/para/o/diretorio'  # Substitua pelo caminho correto do diretório
+    diretorio = r'C:\Users\Novo Pc de testes\Desktop\NAC_THIAGO'  # Substitua pelo caminho correto do diretório
     log_info("Iniciando o script...")
     processar_csv(diretorio, uri)
     log_info("Script concluído.")
