@@ -5,14 +5,14 @@ import logging
 from datetime import datetime
 
 # Função para criar a pasta de logs e o arquivo de log com a data atual
-def configurar_log(diretorio):
+def configurar_log():
     """Cria a pasta de logs e define o arquivo de log com a data atual."""
     # Define o nome do arquivo de log com a data e hora no formato anomesdiahoraminutosegundo
     data_atual = datetime.now().strftime('%Y%m%d%H%M%S')
     nome_arquivo_log = f"log{data_atual}.txt"
 
-    # Caminho da pasta de logs
-    caminho_logs = os.path.join(diretorio, 'logs')
+    # Caminho da pasta de logs (ajustado para ser no mesmo diretório do script)
+    caminho_logs = os.path.join(os.getcwd(), 'logs')
     
     # Verifica se a pasta de logs existe, caso não exista, cria
     if not os.path.exists(caminho_logs):
@@ -153,8 +153,12 @@ def processar_csv(diretorio, uri):
 # Execução do script principal
 if __name__ == "__main__":
     uri = "mongodb+srv://blequizit:aYKbkBUB0FPI39UX@dadospessoas.k6sjq.mongodb.net/"
-    diretorio = r'C:\Users\Novo Pc de testes\Desktop\NAC_THIAGO'  # Substitua pelo caminho correto do diretório
-    configurar_log(diretorio)  # Configura o log antes de iniciar o processamento
+    # Obtém o diretório onde o script está sendo executado
+    diretorio_base = os.path.dirname(os.path.abspath(__file__))
+
+    # Cria o caminho para a pasta 'dados'
+    diretorio = os.path.join(diretorio_base, 'dados')
+    configurar_log()  # Configura o log agora sem parâmetros
     log_info("Iniciando o script...")
     processar_csv(diretorio, uri)
     log_info("Script concluído.")
