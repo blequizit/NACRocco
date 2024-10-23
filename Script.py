@@ -1,48 +1,65 @@
 import os
 import pandas as pd
 from pymongo import MongoClient
+import logging
 
-# Função para conectar ao MongoDB Atlas com autenticação via URI
+# Configuração do logging
+logging.basicConfig(level=logging.INFO)
+
 def conectar_mongodb():
-    # URI fornecida pelo MongoDB Atlas
+    """Conecta ao MongoDB usando a URI fornecida e retorna a coleção."""
     uri = "mongodb+srv://blequizit:aYKbkBUB0FPI39UX@dadospessoas.k6sjq.mongodb.net/"
     
-    # Conectando ao MongoDB usando a URI
-    client = MongoClient(uri)
-    
-    # Conectar ao banco de dados 'DadosPessoas1' e à coleção 'DadosPessoas01'
-    db = client['DadosPessoas1']  # Nome do banco de dados
-    collection = db['DadosPessoas01']  # Nome da coleção
-    return collection
+    try:
+        # Conectando ao MongoDB usando a URI
+        client = MongoClient(uri)
+        # Conectar ao banco de dados 'DadosPessoas1' e à coleção 'DadosPessoas01'
+        db = client['DadosPessoas1']  # Nome do banco de dados
+        collection = db['DadosPessoas01']  # Nome da coleção
+        logging.info("Conexão com o MongoDB estabelecida com sucesso.")
+        return collection
+    except Exception as e:
+        logging.error(f"Erro ao conectar ao MongoDB: {e}")
+        return None
 
-# Função que verifica se há CSV no diretório e insere no MongoDB
-def verificar_e_inserir_csv(diretorio):
-    # Verificar se há arquivos CSV no diretório
+def verificar_csv(diretorio):
+    """Verifica se há arquivos CSV no diretório e retorna a lista de arquivos encontrados."""
     arquivos_csv = [f for f in os.listdir(diretorio) if f.endswith('.csv')]
     
     if arquivos_csv:
-        # Pegar o primeiro arquivo CSV encontrado
-        arquivo_csv = arquivos_csv[0]
-        caminho_arquivo = os.path.join(diretorio, arquivo_csv)
-        
-        # Carregar o arquivo CSV
-        print(f"Carregando o arquivo: {arquivo_csv}")
-        df = pd.read_csv(caminho_arquivo)
-        
-        # Conectar ao MongoDB
-        collection = conectar_mongodb()
-
-        # Converter o DataFrame para um formato adequado ao MongoDB (lista de dicionários)
-        dados = df.to_dict(orient='records')
-
-        # Inserir os dados no MongoDB
-        collection.insert_many(dados)
-        print(f"Dados inseridos no MongoDB a partir de {arquivo_csv}.")
+        logging.info(f"Arquivos CSV encontrados: {arquivos_csv}")
+        return arquivos_csv
     else:
-        print("Nenhum arquivo CSV encontrado no diretório.")
+        logging.warning("Nenhum arquivo CSV encontrado no diretório.")
+        return []
 
-# Definir o diretório onde o arquivo CSV está localizado
-diretorio = r'C:\Users\Novo Pc de testes\Desktop\NAC_THIAGO'  # Substitua pelo caminho correto do diretório
+def inserir_dados_no_mongodb(arquivo_csv):
+    """Insere dados de um arquivo CSV no MongoDB."""
+    try:
+        df = pd.read_csv(arquivo_csv)
+        collection = conectar_mongodb()
+        
+        if collection:
+            dados = df.to_dict(orient='records')
+            collection.insert_many(dados)
+            logging.info(f"Dados inseridos no MongoDB a partir de {arquivo_csv}.")
+        else:
+            logging.error("Coleção não encontrada. Dados não foram inseridos.")
+    except FileNotFoundError:
+        logging.error(f"Arquivo não encontrado: {arquivo_csv}")
+    except pd.errors.EmptyDataError:
+        logging.error(f"O arquivo CSV está vazio: {arquivo_csv}")
+    except Exception as e:
+        logging.error(f"Erro ao processar {arquivo_csv}: {e}")
 
-# Executar a função automaticamente
-verificar_e_inserir_csv(diretorio)
+def processar_csv(diretorio):
+    """Verifica e insere dados de arquivos CSV no MongoDB."""
+    arquivos_csv = verificar_csv(diretorio)
+    
+    for arquivo_csv in arquivos_csv:
+        caminho_arquivo = os.path.join(diretorio, arquivo_csv)
+        inserir_dados_no_mongodb(caminho_arquivo)
+
+# Defina a variável de ambiente antes de executar o script
+diretorio = '/caminho/para/o/diretorio'  # Substitua pelo caminho correto do diretório
+processar_csv(diretorio)
