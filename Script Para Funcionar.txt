@@ -1,0 +1,41 @@
+# Script Para Funcionar
+
+## Parte 1: Configuração do Ambiente
+
+- **Abra o Terminal**
+    - Abra o CMD ou PowerShell no diretório onde estão os arquivos do projeto.
+    - **Verifique se os Contêineres Estão em Execução**
+        - Execute o seguinte comando para verificar quais contêineres estão em execução:
+          
+          docker ps
+          
+    - **Inicie o Airflow**
+        - Para inicializar o ambiente do Airflow, execute o comando:
+          ```bash
+          docker-compose up airflow-init
+          ```
+        - Se não funcionar, siga as instruções abaixo:
+            - **Pare e remova os contêineres existentes:**
+              
+              docker-compose down
+              
+            - **Reconstrua e inicie os contêineres:**
+              
+              docker-compose up --build
+              
+
+## Parte 2: Acesso ao Airflow
+
+- **Acesse a Interface do Airflow**
+    - Abra o navegador e insira o seguinte endereço:
+      
+      http://localhost:8080/admin
+      
+    - **Credenciais de Acesso:**
+        - Usuário: `airflow`
+        - Senha: `airflow`
+
+## Observações
+
+- Certifique-se de que o Docker Desktop esteja em execução antes de iniciar o Airflow.
+- Documentação do projeto e detalhes adicionais podem ser encontrados no arquivo `README.md`.
