@@ -86,7 +86,7 @@ As principais referências utilizadas para o desenvolvimento deste projeto inclu
 
 ## Autores
 Projeto desenvolvido pelo grupo **SKYTECH**:
-- **Anna Paula Martins** - RM558152
-- **Eduardo Ferreira** - RM555610 (Representante)
-- **Guilherme Panfiete** - RM557758
+- **Anna Paula Martins** - RM558152                 [Linkedin](https://www.linkedin.com/in/anna-paula-martins-aa9b4815b/)
+- **Eduardo Ferreira** - RM555610 (Representante)   [Linkedin](https://www.linkedin.com/in/eduferreira447/)
+- **Guilherme Panfiete** - RM557758                 [Linkedin](https://www.linkedin.com/in/guilherme-panfiete-ceccarelli-40055a277/)
 - **Victória Nogueira** - RM558629
